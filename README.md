@@ -24,10 +24,11 @@ npm run dev
 ```bash
 # Frontend
 cd citta-technologies
+npm i
 npm run build
-# Output in dist/ folder
 
 # Backend — just run with PM2 or similar
 cd citta-backend
-npm start
+npm i 
+npm run dev
 ```
