@@ -1,118 +1,36 @@
-# CITTA Technologies — Official Website
+Here's how to commit changes for any scenario:
+Any change in any file (most common)
+bashgit add .
+git commit -m "Your message"
+git push
 
-A full-stack company website built with **React + Vite** (frontend) and **Node.js + Express** (backend), connected to **MySQL**.
+Only frontend changes
+bashgit add citta-technologies/
+git commit -m "Frontend: describe what you changed"
+git push
 
----
+Only backend changes
+bashgit add citta-backend/
+git commit -m "Backend: describe what you changed"
+git push
 
-## 📁 Project Structure
+Only a specific file
+bashgit add citta-technologies/src/pages/Home.jsx
+git commit -m "Updated Home page hero section"
+git push
 
-```
-citta-technologies/   ← React Vite frontend
-citta-backend/        ← Node.js Express backend
-```
+Useful commands to check before committing
+bashgit status          # see what files changed
+git diff            # see exact line-by-line changes
+git log --oneline   # see all past commits
 
----
-
-## 🚀 Frontend Setup (React + Vite)
-
-```bash
-cd citta-technologies
-npm install
-npm run dev
-```
-
-Runs at: **http://localhost:5173**
-
-### Pages
-| Route | Page |
-|-------|------|
-| `/` | Home |
-| `/services` | Services (Software, App, Web, E-Commerce, Cloud, Cyber) |
-| `/industries` | Industries |
-| `/about` | About |
-| `/insights` | Insights / Blog |
-| `/careers` | Careers |
-| `/contact` | Contact Us |
-
----
-
-## 🖥️ Backend Setup (Node.js + MySQL)
-
-### 1. Set up MySQL database
-
-```sql
-CREATE DATABASE citta_db;
+Good commit message examples
+bashgit commit -m "Add contact form validation"
+git commit -m "Fix navbar mobile menu bug"
+git commit -m "Update services page content"
+git commit -m "Backend: add email notification on contact submit"
 ```
 
-Or run the provided `database.sql` file:
-
-```bash
-mysql -u root -p < database.sql
+The golden rule — **always follow this order:**
 ```
-
-### 2. Configure environment
-
-```bash
-cd citta-backend
-cp .env.example .env
-# Edit .env with your MySQL credentials
-```
-
-### 3. Install & start
-
-```bash
-npm install
-npm run dev     # development (with nodemon)
-npm start       # production
-```
-
-Runs at: **http://localhost:5000**
-
-### API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Health check |
-| POST | `/api/contact` | Submit contact form |
-| GET | `/api/contact` | Get all submissions (admin) |
-
-### Contact Form Payload (POST `/api/contact`)
-
-```json
-{
-  "fullName": "John Doe",
-  "email": "john@company.com",
-  "company": "Acme Corp",
-  "phone": "+91 900 000 0000",
-  "subject": "Project inquiry",
-  "message": "Hello, I'd like to discuss..."
-}
-```
-
----
-
-## 🎨 Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18, Vite, React Router v6 |
-| Styling | Custom CSS (no framework) |
-| Icons | Lucide React |
-| Fonts | Syne (display) + DM Sans (body) |
-| Backend | Node.js, Express |
-| Database | MySQL (via mysql2) |
-
----
-
-## 🏗️ Build for Production
-
-```bash
-# Frontend
-cd citta-technologies
-npm run build
-# Output in dist/ folder
-
-# Backend — just run with PM2 or similar
-cd citta-backend
-npm start
-```
+git add  →  git commit  →  git pushWant to be notified when Claude responds?Notify Sonnet 4.6Claude is AI and can make mistakes. Please double-check responses.

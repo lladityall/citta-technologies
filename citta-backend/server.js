@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
+const nodemailer = require('nodemailer'); // 1. Import Nodemailer
 require('dotenv').config();
 
 const app = express();
@@ -24,6 +25,17 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+// 2. Configure Nodemailer Transporter
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT, // 465 for SSL
+  secure: true, 
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
 // Initialize database table
 async function initDB() {
   try {
@@ -43,67 +55,74 @@ async function initDB() {
     conn.release();
     console.log('✅ Database initialized successfully');
   } catch (err) {
-    console.error('⚠️  Database init error (running without DB):', err.message);
+    console.error('⚠️  Database init error:', err.message);
   }
 }
 
 // ── Routes ──────────────────────────────────────────────
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'CITTA Technologies API is running' });
 });
 
-// POST /api/contact — Save contact form submission
 app.post('/api/contact', async (req, res) => {
   const { fullName, email, company, phone, subject, message } = req.body;
 
-  // Basic validation
   if (!fullName || !email || !subject || !message) {
     return res.status(400).json({ message: 'Please fill in all required fields.' });
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ message: 'Please enter a valid email address.' });
-  }
-
   try {
+    // A. Save to Database
     const [result] = await pool.execute(
       `INSERT INTO contact_submissions (full_name, email, company, phone, subject, message)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [fullName, email, company || null, phone || null, subject, message]
     );
 
+    // B. Send Email Notification
+    const mailOptions = {
+      from: `"${fullName}" <${process.env.SMTP_USER}>`, // Best practice: send FROM your authenticated email
+      replyTo: email, // So you can click 'Reply' in Gmail to reach the user
+      to: process.env.RECEIVER_EMAIL,
+      subject: `New Contact Form: ${subject}`,
+      html: `
+        <h3>New Submission from CITTA Website</h3>
+        <p><strong>Name:</strong> ${fullName}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Company:</strong> ${company || 'N/A'}</p>
+        <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
     res.status(201).json({
-      message: 'Thank you! Your message has been received.',
+      message: 'Thank you! Your message has been received and emailed.',
       id: result.insertId,
     });
   } catch (err) {
-    console.error('DB insert error:', err.message);
+    console.error('Error processing contact form:', err.message);
     res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
 
-// GET /api/contact — Retrieve all submissions (admin)
 app.get('/api/contact', async (req, res) => {
   try {
-    const [rows] = await pool.execute(
-      'SELECT * FROM contact_submissions ORDER BY created_at DESC'
-    );
+    const [rows] = await pool.execute('SELECT * FROM contact_submissions ORDER BY created_at DESC');
     res.json({ count: rows.length, data: rows });
   } catch (err) {
-    console.error('DB fetch error:', err.message);
     res.status(500).json({ message: 'Server error.' });
   }
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Start server
 app.listen(PORT, async () => {
   console.log(`🚀 CITTA Technologies API running on http://localhost:${PORT}`);
   await initDB();
