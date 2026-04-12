@@ -208,3 +208,44 @@
     display: flex;
   }
 }
+/* Navbar Brand Container */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  transition: var(--transition);
+}
+
+/* Logo Image Styling */
+.brand-logo-img {
+  /* Height is usually controlled to keep the navbar slim */
+  height: 45px; 
+  width: auto; /* Maintains aspect ratio */
+  display: block;
+  
+  /* If your logo has a white background but needs to be on a dark navbar, 
+     use mix-blend-mode if the logo is black on white, 
+     or ensure you are using a transparent PNG/SVG. */
+  object-fit: contain;
+}
+
+/* Navbar container adjustments to match the image layout */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px; /* Standard height for the header in the screenshot */
+}
+
+/* Hover effect for the brand */
+.navbar-brand:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Responsive adjustment for mobile */
+@media (max-width: 768px) {
+  .brand-logo-img {
+    height: 35px; /* Slightly smaller for mobile screens */
+  }
+}

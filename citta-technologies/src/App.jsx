@@ -8,8 +8,9 @@ import About from './pages/About'
 import Insights from './pages/Insights'
 import Careers from './pages/Careers'
 import Contact from './pages/Contact'
+import Profile from './pages/Profile' // New Import
 import ScrollToTop from './components/ScrollToTop'
-import ChatBot from './components/ChatBot' // Import the new component
+import ChatBot from './components/ChatBot'
 
 export default function App() {
   return (
@@ -24,9 +25,9 @@ export default function App() {
         <Route path="/insights" element={<Insights />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/profile" element={<Profile />} /> {/* New Route */}
       </Routes>
       <Footer />
-      {/* Floating Chatbot Component */}
       <ChatBot /> 
     </BrowserRouter>
   )

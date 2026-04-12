@@ -1,38 +1,22 @@
 import { useState } from 'react'
-import { CheckCircle, Send, Upload } from 'lucide-react'
+import { CheckCircle, MapPin, Phone, Mail } from 'lucide-react'
 import './Contact.css'
 
 export default function Contact() {
-  const [form, setForm] = useState({
-    fullName: '', designation: '', organization: '', location: '',
-    emailMobile: '', advisoryRole: '', expertise: '', shortBio: '',
-    experience: '', previousRoles: '', achievements: '', education: '',
-    certifications: '', links: '', consent: false
-  })
-  const [photo, setPhoto] = useState(null)
+  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [status, setStatus] = useState('idle')
-  const [errorMsg, setErrorMsg] = useState('')
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
-  }
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!form.consent) return setErrorMsg('Consent is required.')
-    
     setStatus('loading')
-    const formData = new FormData()
-    Object.keys(form).forEach(key => formData.append(key, form[key]))
-    if (photo) formData.append('photo', photo)
-
     try {
-      const res = await fetch('http://localhost:5000/api/contact', {
+      const res = await fetch('http://localhost:5000/api/contact-general', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
       })
-
       if (res.ok) setStatus('success')
       else setStatus('error')
     } catch (err) {
@@ -43,129 +27,87 @@ export default function Contact() {
   return (
     <main style={{ paddingTop: 64, background: '#f8fafc' }}>
       <section className="section-pad">
-        <div className="container" style={{ maxWidth: 800 }}>
-          {status === 'success' ? (
-            <div className="success-state">
-              <CheckCircle size={60} color="#10b981" />
-              <h2>Application Received</h2>
-              <p>Thank you, {form.fullName}. Our team will review your profile.</p>
-              <button className="btn-primary" onClick={() => window.location.reload()}>Back</button>
+        {/* Widened container to accommodate the two-column layout */}
+        <div className="container" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px' }}>
+          <div className="contact-layout">
+            
+            {/* Left Side: Map and Info */}
+            <div className="contact-info">
+              <h2 style={{ marginBottom: 24, fontSize: 24, fontWeight: 700 }}>Our Location</h2>
+              <div style={{ width: '100%', height: '350px', borderRadius: '14px', overflow: 'hidden', marginBottom: '24px', border: '1.5px solid var(--gray-200)' }}>
+                <iframe
+                  title="Office Location"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3768.441584880598!2d72.87158307520779!3d19.17590898205166!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b70868870335%3A0xb304b8686d1ec2a7!2sNNP%20Colony%2C%20Dindoshi%2C%20Goregaon%2C%20Mumbai%2C%20Maharashtra%20400065!5e0!3m2!1sen!2sin!4v1712780000000!5m2!1sen!2sin"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              {/* Contact Details from provided image */}
+              <div className="contact-detail">
+                <div className="contact-detail-icon"><MapPin size={18} /></div>
+                <div>
+                  <p className="contact-detail-label">Address</p>
+                  <p className="contact-detail-value">"Sharda" CHSL, 2nd Floor, Plot No.6, NNP Colony, Film City Road, Dindoshi, Goregaon (E), Mumbai 400 065</p>
+                </div>
+              </div>
+              <div className="contact-detail">
+                <div className="contact-detail-icon"><Phone size={18} /></div>
+                <div>
+                  <p className="contact-detail-label">Contact</p>
+                  <p className="contact-detail-value">022 28402833 • 9004891015</p>
+                </div>
+              </div>
+              <div className="contact-detail">
+                <div className="contact-detail-icon"><Mail size={18} /></div>
+                <div>
+                  <p className="contact-detail-label">Email</p>
+                  <p className="contact-detail-value">vsjadhav122448@gmail.com</p>
+                </div>
+              </div>
             </div>
-          ) : (
-            <div className="contact-form-wrap">
-              <h1 style={{ marginBottom: 24, fontSize: 24, fontWeight: 700 }}>Professional Profile</h1>
-              <form onSubmit={handleSubmit} className="contact-form">
-                
-                {/* Personal Info Row */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Full Name *</label>
-                    <input className="form-input" name="fullName" onChange={handleChange} required />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Email / Mobile *</label>
-                    <input className="form-input" name="emailMobile" onChange={handleChange} required />
-                  </div>
+
+            {/* Right Side: Form */}
+            <div className="contact-right">
+              {status === 'success' ? (
+                <div className="success-state">
+                  <CheckCircle size={60} color="#10b981" />
+                  <h3>Message Sent</h3>
+                  <p>Thank you for reaching out. We will get back to you soon.</p>
+                  <button className="btn-primary" onClick={() => setStatus('idle')}>Back</button>
                 </div>
-
-                {/* Professional Info Row */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Designation *</label>
-                    <input className="form-input" name="designation" onChange={handleChange} required />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Organization *</label>
-                    <input className="form-input" name="organization" onChange={handleChange} required />
-                  </div>
+              ) : (
+                <div className="contact-form-wrap">
+                  <h1 style={{ marginBottom: 24, fontSize: 24, fontWeight: 700 }}>Send a Message</h1>
+                  <form onSubmit={handleSubmit} className="contact-form">
+                    <div className="form-group">
+                      <label className="form-label">Full Name</label>
+                      <input className="form-input" name="name" onChange={handleChange} required />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Email Address</label>
+                      <input className="form-input" type="email" name="email" onChange={handleChange} required />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Subject</label>
+                      <input className="form-input" name="subject" onChange={handleChange} required />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Message</label>
+                      <textarea className="form-input" name="message" rows={5} onChange={handleChange} required />
+                    </div>
+                    <button type="submit" className="btn-primary" disabled={status === 'loading'}>
+                      {status === 'loading' ? 'Sending...' : 'Send Message'}
+                    </button>
+                  </form>
                 </div>
-
-                {/* Role & Location */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Location *</label>
-                    <input className="form-input" name="location" placeholder="City, Country" onChange={handleChange} required />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Advisory Role *</label>
-                    <select className="form-input" name="advisoryRole" onChange={handleChange} required>
-                      <option value="">Select Role</option>
-                      <option value="Senior Full-Stack Developer">Senior Full-Stack Developer</option>
-                      <option value="React Native Developer">React Native Developer</option>
-                      <option value="DevOps Engineer">DevOps Engineer</option>
-                      <option value="UI/UX Designer">UI/UX Designer</option>
-                      <option value="Business Analyst">Business Analyst</option>
-                      <option value="QA Engineer">QA Engineer</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Text Areas */}
-                <div className="form-group">
-                  <label className="form-label">Expertise (4-5 sentences) *</label>
-                  <textarea className="form-input" name="expertise" rows={3} onChange={handleChange} required />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Short Bio (5-6 sentences) *</label>
-                  <textarea className="form-input" name="shortBio" rows={4} onChange={handleChange} required />
-                </div>
-
-                {/* Experience & Previous Roles */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Experience (Years + Summary) *</label>
-                    <input className="form-input" name="experience" onChange={handleChange} required />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Previous Roles</label>
-                    <input className="form-input" name="previousRoles" onChange={handleChange} />
-                  </div>
-                </div>
-
-                {/* Education & Achievements */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Education *</label>
-                    <input className="form-input" name="education" onChange={handleChange} required />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Achievements</label>
-                    <input className="form-input" name="achievements" onChange={handleChange} />
-                  </div>
-                </div>
-
-                {/* Links & Certifications */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label">Certifications</label>
-                    <input className="form-input" name="certifications" onChange={handleChange} />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">LinkedIn / Website</label>
-                    <input className="form-input" name="links" placeholder="https://..." onChange={handleChange} />
-                  </div>
-                </div>
-
-                {/* Photo & Consent */}
-                <div className="form-group">
-                  <label className="form-label">Professional Photo (JPG/PNG) (MAX 2MB) *</label>
-                  <input type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])} required />
-                </div>
-
-                <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <input type="checkbox" name="consent" onChange={handleChange} required />
-                  <span style={{ fontSize: 13 }}>I consent to the processing of my data.</span>
-                </div>
-
-                {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
-
-                <button type="submit" className="btn-primary" disabled={status === 'loading'}>
-                  {status === 'loading' ? 'Submitting...' : 'Submit Application'}
-                </button>
-              </form>
+              )}
             </div>
-          )}
+
+          </div>
         </div>
       </section>
     </main>

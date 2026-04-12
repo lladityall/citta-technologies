@@ -15,9 +15,9 @@ export default function Footer() {
               Intellect + Passion. Empowering businesses with intelligent, scalable technology solutions since 2009.
             </p>
             <div className="footer-social">
-              <a href="#" aria-label="LinkedIn"><Linkedin size={14} /></a>
+              <a href="https://www.linkedin.com/in/girish-koppar-0a296020/" aria-label="LinkedIn"><Linkedin size={14} /></a>
               <a href="#" aria-label="Twitter"><Twitter size={14} /></a>
-              <a href="#" aria-label="GitHub"><Github size={14} /></a>
+              <a href="https://github.com/lladityall" aria-label="GitHub"><Github size={14} /></a>
             </div>
           </div>
 
@@ -47,15 +47,15 @@ export default function Footer() {
             <p className="footer-col-title">Contact Us</p>
             <div className="footer-contact-item">
               <MapPin size={14} />
-              <span>Maharashtra, India</span>
+              <span>Mumbai, Maharashtra</span>
             </div>
             <div className="footer-contact-item">
               <Phone size={14} />
-              <span>+91 (0) 000-000-0000</span>
+              <span>+91 90048 91015</span>
             </div>
             <div className="footer-contact-item">
               <Mail size={14} />
-              <span>info@cittatechnologies.com</span>
+              <span>cittatechnologies@gmail.com</span>
             </div>
           </div>
         </div>

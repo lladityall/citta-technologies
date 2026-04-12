@@ -4,6 +4,7 @@ import { Box, TextField, IconButton, Typography, Paper, Avatar, AppBar, Toolbar,
 import { Send, MessageCircle, X, Bot } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import './ChatBot.css'; // Import the new styles
 
 const ChatBot = () => {
   const navigate = useNavigate();
@@ -43,32 +44,68 @@ const ChatBot = () => {
 
   return (
     <>
-      <Fab color="primary" onClick={() => setIsOpen(!isOpen)} sx={{ position: 'fixed', bottom: 20, right: 20, bgcolor: '#1a237e' }}>
+      <Fab color="primary" onClick={() => setIsOpen(!isOpen)} sx={{ position: 'fixed', bottom: 20, right: 20, bgcolor: '#1a237e', '&:hover': { bgcolor: '#283593' } }}>
         {isOpen ? <X size={24} /> : <MessageCircle size={24} />}
       </Fab>
+
       <Zoom in={isOpen}>
-        <Paper elevation={6} sx={{ width: { xs: '90vw', sm: 380 }, height: 500, display: 'flex', flexDirection: 'column', borderRadius: 4, position: 'fixed', bottom: 90, right: 20, zIndex: 1000, overflow: 'hidden' }}>
-          <AppBar position="static" sx={{ bgcolor: '#1a237e' }}>
+        <Paper elevation={12} className="chat-window" sx={{ width: { xs: '90vw', sm: 400 }, height: 550, position: 'fixed', bottom: 90, right: 20, zIndex: 1000, borderRadius: 4 }}>
+          <AppBar position="static" sx={{ bgcolor: '#1a237e', p: 0.5 }}>
             <Toolbar variant="dense">
-              <Avatar sx={{ bgcolor: 'white', mr: 1, width: 32, height: 32 }}><Bot size={20} color="#1a237e" /></Avatar>
-              <Typography variant="h6" sx={{ flexGrow: 1, fontSize: '1rem' }}>CITTA BOT</Typography>
+              <Avatar sx={{ bgcolor: 'white', mr: 1.5, width: 36, height: 36 }}>
+                <Bot size={22} color="#1a237e" />
+              </Avatar>
+              <Box>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2 }}>CITTA BOT</Typography>
+                <Typography variant="caption" sx={{ opacity: 0.8 }}>Online | Powered by AI</Typography>
+              </Box>
             </Toolbar>
           </AppBar>
-          <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 2, bgcolor: '#f8fafc' }}>
+
+          <Box className="chat-body" sx={{ flexGrow: 1, overflowY: 'auto', p: 2, bgcolor: '#f8fafc' }}>
             <List dense>
               {messages.map((msg, i) => (
                 <ListItem key={i} sx={{ flexDirection: 'column', alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start', mb: 2, px: 0 }}>
-                  <Paper sx={{ p: 1.5, bgcolor: msg.role === 'user' ? '#1a237e' : 'white', color: msg.role === 'user' ? 'white' : '#334155', borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px', maxWidth: '85%', '& p': { m: 0, fontSize: '0.85rem' } }}>
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                  <Paper 
+                    elevation={1}
+                    sx={{ 
+                      p: 2, 
+                      bgcolor: msg.role === 'user' ? '#1a237e' : 'white', 
+                      color: msg.role === 'user' ? 'white' : '#334155', 
+                      borderRadius: msg.role === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px', 
+                      maxWidth: '90%',
+                      border: msg.role === 'user' ? 'none' : '1px solid #e2e8f0'
+                    }}
+                  >
+                    <div className="markdown-content">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                    </div>
                   </Paper>
                 </ListItem>
               ))}
+              {isTyping && <Typography className="typing-indicator">CITTA is typing...</Typography>}
               <div ref={scrollRef} />
             </List>
           </Box>
-          <Box sx={{ p: 2, display: 'flex', gap: 1, borderTop: '1px solid #e2e8f0' }}>
-            <TextField fullWidth size="small" placeholder="Ask CITTA..." value={input} onChange={e => setInput(e.target.value)} onKeyPress={e => e.key === 'Enter' && handleSend()} />
-            <IconButton sx={{ bgcolor: '#1a237e', color: 'white' }} onClick={handleSend} disabled={isTyping}><Send size={18} /></IconButton>
+
+          <Box sx={{ p: 2, display: 'flex', gap: 1, borderTop: '1px solid #e2e8f0', bgcolor: 'white' }}>
+            <TextField 
+              fullWidth 
+              size="small" 
+              variant="outlined"
+              placeholder="Type your message..." 
+              value={input} 
+              onChange={e => setInput(e.target.value)} 
+              onKeyPress={e => e.key === 'Enter' && handleSend()}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 10 } }}
+            />
+            <IconButton 
+              sx={{ bgcolor: '#1a237e', color: 'white', '&:hover': { bgcolor: '#283593' } }} 
+              onClick={handleSend} 
+              disabled={isTyping}
+            >
+              <Send size={20} />
+            </IconButton>
           </Box>
         </Paper>
       </Zoom>

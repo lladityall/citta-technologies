@@ -47,8 +47,11 @@ export default function Navbar() {
     <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
       <div className="container navbar-inner">
         <Link to="/" className="navbar-brand">
-          <span className="brand-citta">CITTA</span>
-          <span className="brand-tech">TECHNOLOGIES</span>
+          <img 
+            src="/logos/cittalogo.png" 
+            alt="CITTA TECHNOLOGIES" 
+            className="brand-logo-img" 
+          />
         </Link>
 
         <div className="navbar-links">

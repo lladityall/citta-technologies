@@ -62,7 +62,7 @@ export default function Careers() {
                   </div>
                 </div>
                 <Link
-                  to="/contact"
+                  to="/profile"
                   style={{
                     display:'inline-flex', alignItems:'center', gap:4,
                     fontSize:13, fontWeight:600,
@@ -85,7 +85,7 @@ export default function Careers() {
             <h2>Don't see your role?</h2>
             <p>We're always looking for talented people. Send us your resume and let's talk.</p>
           </div>
-          <Link to="/contact" className="btn-outline">Get in touch <ArrowRight size={15} /></Link>
+          <Link to="/profile" className="btn-outline">Get in touch <ArrowRight size={15} /></Link>
         </div>
       </section>
     </main>
